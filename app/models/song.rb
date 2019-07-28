@@ -8,31 +8,33 @@ class Song < ActiveRecord::Base
     self.artist = Artist.find_or_create_by(name: name)
   end
 
-  def artist_name
-    self.artist.name if self.artist
+   def artist_name
+     self.artist ? self.artist.name : nil
   end
 
-  def genre_name=(name)
+   def genre_name=(name)
     self.genre = Genre.find_or_create_by(name: name)
   end
 
-  def genre_name
-    self.genre.name if self.genre
+   def genre_name
+     self.genre ? self.genre.name : nil
   end
 
-  def note_contents=(content)
-    content.each do |content|
-      self.notes << Note.find_or_create_by(content: content)
-  end
-
-  end
-
-  def note_contents
+   def note_contents
     notes = []
     self.notes.each do |note|
-      notes << note.content unless note.content.empty?
+      notes << note.content
     end
     notes
   end
-  
+
+   def note_contents=(array)
+    array.each do |n|
+      if n != ""
+        note = Note.create(content: n)
+        self.notes << note
+      end
+    end
+  end
+
 end
